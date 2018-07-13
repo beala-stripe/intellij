@@ -259,7 +259,7 @@ final class FastBuildServiceImpl implements FastBuildService {
 
   @Nullable
   private static BuildOutput getCompletedBuild(@Nullable FastBuildState buildState) {
-    if (buildState == null) {
+    if (buildState == null || !buildState.compilerOutputDirectory().exists()) {
       return null;
     }
 

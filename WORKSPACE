@@ -19,15 +19,15 @@ new_http_archive(
 new_http_archive(
     name = "intellij_ce_2018_2",
     build_file = "@//intellij_platform_sdk:BUILD.idea",
-    sha256 = "bbfa4ee0c6fb237a91c96f533d591218556d0a9046dd0bd747d714c409d32ba9",
-    url = "https://download.jetbrains.com/idea/ideaIC-182.2949.4.tar.gz",
+    sha256 = "6f703ad9204fe5ba6a6be9616e22e20d9006252482de4062ceb8003c8d74182c",
+    url = "https://download.jetbrains.com/idea/ideaIC-182.3684.2.tar.gz",
 )
 
 # The plugin api for IntelliJ UE 2018.1. This is required to run UE-specific
 # integration tests.
 new_http_archive(
     name = "intellij_ue_2018_1",
-    build_file = "@//intellij_platform_sdk:BUILD.idea",
+    build_file = "@//intellij_platform_sdk:BUILD.ue",
     sha256 = "4c5dbae40f0f045bcfa1c17c579c0d8cd8fb1823117a49a16ddd23249b078154",
     url = "https://download.jetbrains.com/idea/ideaIU-2018.1.3.tar.gz",
 )
@@ -36,9 +36,9 @@ new_http_archive(
 # integration tests.
 new_http_archive(
     name = "intellij_ue_2018_2",
-    build_file = "@//intellij_platform_sdk:BUILD.idea",
-    sha256 = "3ebf71ff818f907aef182636adad970378baee3c82d252ba4990180dc8d6f88e",
-    url = "https://download.jetbrains.com/idea/ideaIU-182.2949.4.tar.gz",
+    build_file = "@//intellij_platform_sdk:BUILD.ue",
+    sha256 = "186cfc35afb25c73cfa2daf3a2d8b0521a112fc25b18f1b0af436f2d081b0ec5",
+    url = "https://download.jetbrains.com/idea/ideaIU-182.3684.2.tar.gz",
 )
 
 # The plugin api for CLion 2017.3. This is required to build CLwB,
@@ -124,18 +124,25 @@ new_http_archive(
     url = "https://plugins.jetbrains.com/files/1347/44474/scala-intellij-bin-2018.1.8.zip",
 )
 
+# Scala plugin for IntelliJ CE 2018.2. Required at compile-time for scala-specific features.
 new_http_archive(
-    name = "android_studio_3_1",
-    build_file = "@//intellij_platform_sdk:BUILD.android_studio",
-    sha256 = "e2780a02bc50f9e9fa824bf7262ae72b7277ede776379f636ef36c0ecbdbe066",
-    url = "https://dl.google.com/dl/android/studio/ide-zips/3.1.0.12/android-studio-ide-173.4615496-linux.zip",
+    name = "scala_2018_2",
+    build_file_content = "\n".join([
+        "java_import(",
+        "    name = 'scala',",
+        "    jars = glob(['Scala/lib/*.jar']),",
+        "    visibility = ['//visibility:public'],",
+        ")",
+    ]),
+    sha256 = "2306be7c8f1e408ab8e671d8c5f4f85626dd774014b782950c8d3ea47607fbcd",
+    url = "https://plugins.jetbrains.com/files/1347/47293/scala-intellij-bin-2018.2.4.zip",
 )
 
 new_http_archive(
     name = "android_studio_3_2",
     build_file = "@//intellij_platform_sdk:BUILD.android_studio",
-    sha256 = "8c98f9018cf59faa0e1d2faf39bdad187166088b0d4a5506bd6088964a3527ad",
-    url = "https://dl.google.com/dl/android/studio/ide-zips/3.2.0.11/android-studio-ide-181.4729833-linux.zip",
+    sha256 = "9c91f6d70f3985f2289b28e04028d3717705096dc051290e7e9e773c7adeedc6",
+    url = "https://dl.google.com/dl/android/studio/ide-zips/3.2.0.18/android-studio-ide-181.4847800-linux.zip",
 )
 
 # LICENSE: Common Public License 1.0

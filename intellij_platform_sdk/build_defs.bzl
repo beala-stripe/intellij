@@ -7,8 +7,8 @@ INDIRECT_IJ_PRODUCTS = {
     "intellij-ue-latest": "intellij-ue-2018.1",
     "intellij-ue-beta": "intellij-ue-2018.1",
     "android-studio-latest": "android-studio-3.0",
-    "android-studio-beta": "android-studio-3.0",
-    "android-studio-canary": "android-studio-3.2",
+    "android-studio-beta": "android-studio-3.2",
+    "android-studio-canary": "android-studio-3.3",
     "clion-latest": "clion-2017.3",
     "clion-beta": "clion-2018.1",
 }
@@ -34,13 +34,13 @@ DIRECT_IJ_PRODUCTS = {
         ide = "android-studio",
         directory = "android_studio_3_0",
     ),
-    "android-studio-3.1": struct(
-        ide = "android-studio",
-        directory = "android_studio_3_1",
-    ),
     "android-studio-3.2": struct(
         ide = "android-studio",
         directory = "android_studio_3_2",
+    ),
+    "android-studio-3.3": struct(
+        ide = "android-studio",
+        directory = "android_studio_3_3",
     ),
     "clion-2017.3": struct(
         ide = "clion",

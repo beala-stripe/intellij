@@ -16,7 +16,6 @@
 
 package com.google.idea.blaze.cpp;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.idea.blaze.base.ideinfo.TargetIdeInfo;
 import com.google.idea.blaze.base.ideinfo.TargetKey;
@@ -109,8 +108,7 @@ public final class BlazeCWorkspace implements ProjectComponent {
             });
   }
 
-  @VisibleForTesting
-  BlazeConfigurationResolverResult resolveConfigurations(
+  private BlazeConfigurationResolverResult resolveConfigurations(
       BlazeContext context,
       WorkspaceRoot workspaceRoot,
       ProjectViewSet projectViewSet,
@@ -120,8 +118,7 @@ public final class BlazeCWorkspace implements ProjectComponent {
         context, workspaceRoot, projectViewSet, blazeProjectData, oldResult);
   }
 
-  @VisibleForTesting
-  CommitableConfiguration calculateConfigurations(
+  private CommitableConfiguration calculateConfigurations(
       BlazeProjectData blazeProjectData,
       WorkspaceRoot workspaceRoot,
       BlazeConfigurationResolverResult newResult,
@@ -273,8 +270,7 @@ public final class BlazeCWorkspace implements ProjectComponent {
     return new CommitableConfiguration(newResult, workspaceModifiable);
   }
 
-  @VisibleForTesting
-  void commitConfigurations(CommitableConfiguration config) {
+  private void commitConfigurations(CommitableConfiguration config) {
     resolverResult = config.result;
     OCWorkspaceModifiableModelAdapter.commit(config.model, SERIALIZATION_VERSION);
   }
@@ -314,7 +310,7 @@ public final class BlazeCWorkspace implements ProjectComponent {
   }
 
   /** Contains the configuration to be committed all-at-once */
-  public static class CommitableConfiguration {
+  private static class CommitableConfiguration {
     private final BlazeConfigurationResolverResult result;
     private final OCWorkspaceImpl.ModifiableModel model;
 

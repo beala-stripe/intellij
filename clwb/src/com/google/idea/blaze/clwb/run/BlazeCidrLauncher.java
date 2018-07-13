@@ -89,7 +89,7 @@ public final class BlazeCidrLauncher extends CidrLauncher {
   private final BlazeCidrRunConfigurationRunner runner;
   private final ExecutionEnvironment env;
 
-  static final BoolExperiment useRemoteDebugging = new BoolExperiment("cc.remote.debugging", true);
+  static final BoolExperiment useRemoteDebugging = new BoolExperiment("cc.remote.debugging", false);
 
   private static final ImmutableList<String> extraFlagsForDebugRun =
       ImmutableList.of(

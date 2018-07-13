@@ -16,13 +16,11 @@
 
 package com.google.idea.blaze.cpp;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.idea.blaze.base.model.BlazeProjectData;
 import com.google.idea.blaze.base.model.primitives.WorkspaceRoot;
 import com.google.idea.blaze.base.projectview.ProjectViewSet;
 import com.google.idea.blaze.base.scope.BlazeContext;
-import com.google.idea.sdkcompat.cidr.OCWorkspaceAdapter;
 import com.intellij.openapi.application.TransactionGuard;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -39,7 +37,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /** Main entry point for C/CPP configuration data. */
-public final class BlazeCWorkspace extends OCWorkspaceAdapter implements ProjectComponent {
+public final class BlazeCWorkspace implements OCWorkspace, ProjectComponent {
   private final BlazeConfigurationResolver configurationResolver;
   private BlazeConfigurationResolverResult resolverResult;
   private final Project project;
@@ -71,39 +69,13 @@ public final class BlazeCWorkspace extends OCWorkspaceAdapter implements Project
               public void run(ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);
                 indicator.setText2("Resolving Configurations...");
-                BlazeConfigurationResolverResult newResult =
-                    resolveConfigurations(context, workspaceRoot, projectViewSet, blazeProjectData);
-                CommitableConfiguration config =
-                    calculateConfigurations(blazeProjectData, workspaceRoot, newResult, indicator);
-                commitConfigurations(config);
+                BlazeConfigurationResolverResult oldResult = resolverResult;
+                resolverResult =
+                    configurationResolver.update(
+                        context, workspaceRoot, projectViewSet, blazeProjectData, oldResult);
                 incModificationTrackers();
               }
             });
-  }
-
-  @VisibleForTesting
-  BlazeConfigurationResolverResult resolveConfigurations(
-      BlazeContext context,
-      WorkspaceRoot workspaceRoot,
-      ProjectViewSet projectViewSet,
-      BlazeProjectData blazeProjectData) {
-    BlazeConfigurationResolverResult oldResult = resolverResult;
-    return configurationResolver.update(
-        context, workspaceRoot, projectViewSet, blazeProjectData, oldResult);
-  }
-
-  @VisibleForTesting
-  CommitableConfiguration calculateConfigurations(
-      BlazeProjectData blazeProjectData,
-      WorkspaceRoot workspaceRoot,
-      BlazeConfigurationResolverResult newResult,
-      ProgressIndicator indicator) {
-    return new CommitableConfiguration(newResult);
-  }
-
-  @VisibleForTesting
-  void commitConfigurations(CommitableConfiguration config) {
-    resolverResult = config.result;
   }
 
   private void incModificationTrackers() {
@@ -180,14 +152,5 @@ public final class BlazeCWorkspace extends OCWorkspaceAdapter implements Project
 
   public OCWorkspace getWorkspace() {
     return this;
-  }
-
-  /** Contains the configuration to be committed all-at-once */
-  public static class CommitableConfiguration {
-    final BlazeConfigurationResolverResult result;
-
-    CommitableConfiguration(BlazeConfigurationResolverResult result) {
-      this.result = result;
-    }
   }
 }

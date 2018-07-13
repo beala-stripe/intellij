@@ -96,29 +96,34 @@ class GenerateExecutableDeployableJarProviderTaskProvider
     return isValidConfiguration(configuration);
   }
 
-  private boolean isValidConfiguration(RunConfiguration runConfiguration) {
-    return runConfiguration instanceof ApplicationConfiguration;
+  private boolean isValidConfiguration(RunConfiguration config) {
+    return Blaze.isBlazeProject(project) && getTarget(config) != null;
   }
 
   @Nullable
   @Override
-  public Task createTask(RunConfiguration runConfiguration) {
-    if (isValidConfiguration(runConfiguration)) {
+  public Task createTask(RunConfiguration config) {
+    if (isValidConfiguration(config)) {
       return new Task();
     }
     return null;
   }
 
+  @Nullable
+  private static Label getTarget(RunConfiguration config) {
+    return config instanceof ApplicationConfiguration
+        ? ((ApplicationConfiguration) config)
+            .getUserData(DeployableJarRunConfigurationProducer.TARGET_LABEL)
+        : null;
+  }
+
   @Override
   public boolean executeTask(
       DataContext context, RunConfiguration configuration, ExecutionEnvironment env, Task task) {
-    ApplicationConfiguration runConfiguration = (ApplicationConfiguration) configuration;
-
-    Label target = runConfiguration.getUserData(DeployableJarRunConfigurationProducer.TARGET_LABEL);
+    Label target = getTarget(configuration);
     if (target == null) {
       return false;
     }
-
     return executeBuild(target, ExecutorType.fromExecutor(env.getExecutor()));
   }
 
