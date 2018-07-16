@@ -349,6 +349,12 @@ def collect_c_toolchain_info(target, ctx, semantics, ide_info, ide_info_file, ou
     update_set_in_dict(output_groups, "intellij-info-cpp", depset([ide_info_file]))
     return True
 
+def dump(thing):
+  ret = ""
+  for attr in dir(thing):
+      ret += attr + ": " + str(getattr(thing, attr, "private")) + "\n"
+  return ret
+
 def get_java_provider(target):
     """Find a provider exposing java compilation/outputs data."""
     if hasattr(target, "proto_java"):
@@ -356,9 +362,14 @@ def get_java_provider(target):
     if hasattr(target, "java"):
         return target.java
     if hasattr(target, "scala"):
+#        print("Scala target " + str(target.label))
+#        print(dump(target))
         return target.scala
     if hasattr(target, "kt") and hasattr(target.kt, "outputs"):
         return target.kt
+    if hasattr(target, "files"):
+      jars = target.files.to_list()
+      return struct(outputs = struct(jars = [struct(class_jar = j, ijar = None) for j in jars]))
 
     # TODO(brendandouglas): use java_common.provider preferentially
     if java_common.provider in target:
@@ -625,6 +636,10 @@ def collect_java_toolchain_info(target, ide_info, ide_info_file, output_groups):
 
 def intellij_info_aspect_impl(target, ctx, semantics):
     """Aspect implementation function."""
+    if hasattr(target, "label") and target.label.name == "costs":
+        print(str(target.label))
+        print(dump(target))
+
     tags = ctx.rule.attr.tags
     if "no-ide" in tags:
         return struct()
