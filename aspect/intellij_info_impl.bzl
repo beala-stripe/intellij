@@ -362,14 +362,13 @@ def get_java_provider(target):
     if hasattr(target, "java"):
         return target.java
     if hasattr(target, "scala"):
-#        print("Scala target " + str(target.label))
-#        print(dump(target))
         return target.scala
     if hasattr(target, "kt") and hasattr(target.kt, "outputs"):
         return target.kt
+
     if hasattr(target, "files"):
-      jars = target.files.to_list()
-      return struct(outputs = struct(jars = [struct(class_jar = j, ijar = None) for j in jars]))
+        files = target.files.to_list()
+        return struct(outputs = struct(jars = [struct(class_jar = f, ijar = None) for f in files if f.basename.endswith("jar")]))
 
     # TODO(brendandouglas): use java_common.provider preferentially
     if java_common.provider in target:
@@ -636,10 +635,6 @@ def collect_java_toolchain_info(target, ide_info, ide_info_file, output_groups):
 
 def intellij_info_aspect_impl(target, ctx, semantics):
     """Aspect implementation function."""
-    if hasattr(target, "label") and target.label.name == "costs":
-        print(str(target.label))
-        print(dump(target))
-
     tags = ctx.rule.attr.tags
     if "no-ide" in tags:
         return struct()
